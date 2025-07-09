@@ -1,0 +1,1 @@
+This is the start to a physics engine project. I don't know exactly where this will go but as of now the base is made using C++ and SFML, with the base physics engine being referenced by https://github.com/johnBuffer/VerletSFML/tree/main.

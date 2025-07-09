@@ -39,7 +39,6 @@ int main()
             vpe::PhysicsObjectVerlet& obj = solver.addPhysicsObject(object_spawn_pos, RNG<float>::getRange(min_max_radius.x, min_max_radius.y));
             const float angle  = max_angle * sin(t) + 3.14159265358f * 0.5f;
             solver.setObjectVelocity(obj, object_spawn_speed * sf::Vector2f{cos(angle), sin(angle)});
-
         }
         solver.update();
         window.clear(sf::Color::White);
