@@ -3,6 +3,7 @@
 #include "../include/renderer.hpp"
 #include <cstdint>
 #include "../include/pObj.hpp"
+#include "../include/particle.hpp"
 #include "../include/utils.hpp"
 #include <optional>
 
@@ -36,7 +37,7 @@ int main()
         if(solver.getObjectCount() < max_objects && clock.getElapsedTime().asSeconds() >= object_spawn_delay) {
             clock.restart();
             const float t = solver.getTime();
-            vpe::PhysicsObjectVerlet& obj = solver.addPhysicsObject(object_spawn_pos, RNG<float>::getRange(min_max_radius.x, min_max_radius.y));
+            vpe::Particle& obj = solver.addPhysicsObject(object_spawn_pos, RNG<float>::getRange(min_max_radius.x, min_max_radius.y), vpe::ParticleType::ELECTRON, -1.0f, 1.0f);
             const float angle  = max_angle * sin(t) + 3.14159265358f * 0.5f;
             solver.setObjectVelocity(obj, object_spawn_speed * sf::Vector2f{cos(angle), sin(angle)});
         }

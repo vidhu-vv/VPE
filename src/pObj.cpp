@@ -1,11 +1,15 @@
 #include "../include/pObj.hpp"
 
-vpe::PhysicsObjectVerlet::PhysicsObjectVerlet() {};
+vpe::PhysicsObjectVerlet::PhysicsObjectVerlet() 
+ : radius{10.0f}
+ , color{sf::Color::White}
+{};
 vpe::PhysicsObjectVerlet::PhysicsObjectVerlet(sf::Vector2f pos_, float radius_)
  : position{pos_}
  , radius{radius_}
  , previousPosition{pos_}
  , acceleration{0.0f, 0.0f}
+ , color{sf::Color::White}
 {};
 
 void vpe::PhysicsObjectVerlet::update(float dt) {

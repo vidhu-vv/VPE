@@ -17,6 +17,7 @@ set(SOURCES
     src/pObj.cpp
     src/renderer.cpp
     src/verletSolver.cpp
+    src/particle.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

@@ -10,8 +10,8 @@ namespace vpe {
         sf::Vector2f position;
         sf::Vector2f previousPosition;
         sf::Vector2f acceleration;
-        float radius = 10.0f;
-        sf::Color color = sf::Color::White;
+        float radius;
+        sf::Color color;
 
         PhysicsObjectVerlet();
         PhysicsObjectVerlet(sf::Vector2f pos_, float radius_);

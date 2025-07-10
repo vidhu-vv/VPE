@@ -1,6 +1,17 @@
 #pragma once
 #include <random>
+struct MATH {
+    static constexpr float PI = 3.14159265358979323846f;
+    static constexpr float K_CONST =   8.9875517923e9f; // N·m²/C²
+    static constexpr float E_CHARGE =  1.602176634e-19f; // C
+    static constexpr float E_MASS =    9.10938356e-31f; // kg
+    static constexpr float P_MASS =    1.67262192369e-27f; // kg
+    static constexpr float N_MASS =    1.67492749804e-27f;
+    static constexpr float P_CHARGE = E_CHARGE;
+    static constexpr float N_CHARGE = 0.0f;
 
+
+};
 
 class NumberGenerator
 {
