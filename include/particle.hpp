@@ -17,6 +17,15 @@ namespace vpe {
             float mass;
 
             Particle(ParticleType type_, sf::Vector2f pos_, float radius_, float charge_, float mass_);
+
+            [[nodiscard]]
+            ParticleType getType() const { return type; }
+            [[nodiscard]]
+            float getCharge() const { return charge; }
+            [[nodiscard]]
+            float getMass() const { return mass; }
+            [[nodiscard]]
+            float getRadius() const { return radius; }
     };
 }
 #endif // VV_PARTICLE

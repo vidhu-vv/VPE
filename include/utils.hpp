@@ -2,16 +2,33 @@
 #include <random>
 struct MATH {
     static constexpr float PI = 3.14159265358979323846f;
-    static constexpr float K_CONST =   8.9875517923e9f; // N·m²/C²
-    static constexpr float E_CHARGE =  1.602176634e-19f; // C
-    static constexpr float E_MASS =    9.10938356e-31f; // kg
-    static constexpr float P_MASS =    1.67262192369e-27f; // kg
-    static constexpr float N_MASS =    1.67492749804e-27f;
-    static constexpr float P_CHARGE = E_CHARGE;
+    static constexpr float K_CONST =  1250.0f;
+    static constexpr float E_CHARGE = -20.0f;
+    static constexpr float E_MASS =    1.0f;
+    static constexpr float P_MASS =    100.0f;
+    static constexpr float N_MASS =    10.2f;
+    static constexpr float P_CHARGE = 20.0f;
     static constexpr float N_CHARGE = 0.0f;
-
-
 };
+
+struct ELECTRON {
+    static constexpr float CHARGE = MATH::E_CHARGE;
+    static constexpr float MASS = MATH::E_MASS;
+    static constexpr float RADIUS = 5.0f;
+};
+
+struct PROTON {
+    static constexpr float CHARGE = MATH::P_CHARGE;
+    static constexpr float MASS = MATH::P_MASS;
+    static constexpr float RADIUS = 5.0f;
+};
+
+struct NEUTRON {
+    static constexpr float CHARGE = MATH::N_CHARGE;
+    static constexpr float MASS = MATH::N_MASS;
+    static constexpr float RADIUS = 5.0f;
+};
+
 
 class NumberGenerator
 {

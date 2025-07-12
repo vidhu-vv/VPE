@@ -5,7 +5,9 @@
 #include "../include/pObj.hpp"
 #include "../include/particle.hpp"
 #include "../include/utils.hpp"
+#include <SFML/Window.hpp>
 #include <optional>
+#include <iostream>
 
 int main()
 {
@@ -25,6 +27,13 @@ int main()
     const uint32_t max_objects = 256;
     const float max_angle = 1.0f;
 
+    const vpe::Particle reference_particles[3] = {
+        vpe::Particle(vpe::ParticleType::ELECTRON, sf::Vector2f{0.0f, 0.0f}, ELECTRON::RADIUS, ELECTRON::CHARGE, ELECTRON::MASS),
+        vpe::Particle(vpe::ParticleType::PROTON, sf::Vector2f{0.0f, 0.0f}, PROTON::RADIUS, PROTON::CHARGE, PROTON::MASS),
+        vpe::Particle(vpe::ParticleType::NEUTRON, sf::Vector2f{0.0f, 0.0f}, NEUTRON::RADIUS, NEUTRON::CHARGE, NEUTRON::MASS)
+    };
+
+    int current_spawn_type_int = 0;
     sf::Clock clock;
 
 
@@ -32,15 +41,37 @@ int main()
         while (const std::optional event = window.pollEvent()){
             if (event->is<sf::Event::Closed>())
                 window.close();
+            else if (const auto* mouseEvent = event->getIf<sf::Event::MouseButtonPressed>()) {
+                if(mouseEvent->button == sf::Mouse::Button::Left) {
+                    vpe::Particle& obj = solver.addPhysicsObject(sf::Vector2f{static_cast<float>(mouseEvent->position.x), static_cast<float>(mouseEvent->position.y)}, reference_particles[current_spawn_type_int].getRadius(), reference_particles[current_spawn_type_int].getType(), reference_particles[current_spawn_type_int].getCharge(), reference_particles[current_spawn_type_int].getMass());
+                    solver.setObjectVelocity(obj, sf::Vector2f{0.0f, 0.0f});
+                }
+            }
+            else if(const auto* buttonEvent = event->getIf<sf::Event::KeyPressed>()) {
+                    if(buttonEvent->code == sf::Keyboard::Key::Space) {
+                        current_spawn_type_int = (current_spawn_type_int + 1) % 3;
+                        std::cout << "Current spawn type: ";
+                        switch(current_spawn_type_int) {
+                            case 0:
+                                std::cout << "ELECTRON\n";
+                                break;
+                            case 1:
+                                std::cout << "PROTON\n";
+                                break;
+                            case 2:
+                                std::cout << "NEUTRON\n";
+                                break;
+                        }
+                    }
+                }
         }
-
-        if(solver.getObjectCount() < max_objects && clock.getElapsedTime().asSeconds() >= object_spawn_delay) {
-            clock.restart();
-            const float t = solver.getTime();
-            vpe::Particle& obj = solver.addPhysicsObject(object_spawn_pos, RNG<float>::getRange(min_max_radius.x, min_max_radius.y), vpe::ParticleType::ELECTRON, -1.0f, 1.0f);
-            const float angle  = max_angle * sin(t) + 3.14159265358f * 0.5f;
-            solver.setObjectVelocity(obj, object_spawn_speed * sf::Vector2f{cos(angle), sin(angle)});
-        }
+        // if(solver.getObjectCount() < max_objects && clock.getElapsedTime().asSeconds() >= object_spawn_delay) {
+        //     clock.restart();
+        //     const float t = solver.getTime();
+        //     vpe::Particle& obj = solver.addPhysicsObject(object_spawn_pos, RNG<float>::getRange(min_max_radius.x, min_max_radius.y), vpe::ParticleType::ELECTRON, -1.0f, 1.0f);
+        //     const float angle  = max_angle * sin(t) + 3.14159265358f * 0.5f;
+        //     solver.setObjectVelocity(obj, object_spawn_speed * sf::Vector2f{cos(angle), sin(angle)});
+        // }
         solver.update();
         window.clear(sf::Color::White);
         renderer.render(solver);

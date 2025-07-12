@@ -2,7 +2,8 @@
 #include "../include/pObj.hpp"
 #include "../include/particle.hpp"
 #include "../include/utils.hpp"
-
+#include <iostream>
+#include <cmath>
 vpe::SolverVerlet::SolverVerlet() {};
 
 vpe::Particle& vpe::SolverVerlet::addPhysicsObject(sf::Vector2f pos_, float radius_, ParticleType type_, float charge_, float mass_) {
@@ -13,7 +14,7 @@ void vpe::SolverVerlet::update() {
     time+=dt;
     const float substepDt = getStepDt();
     for(uint32_t i{substeps}; --i;) {
-        applyForce();
+       applyForce();
         updateObjects(substepDt);
         applyConstraints();
         checkCollisions(substepDt);
@@ -63,13 +64,14 @@ void vpe::SolverVerlet::applyForce() {
             Particle& obj_b = objects[j];
             const sf::Vector2f delta = obj_b.position - obj_a.position;
             const float dist2 = delta.x * delta.x + delta.y * delta.y;
-            if(dist2 > 0.0f) {
-                const sf::Vector2f n = delta / std::sqrt(dist2);
-                const float force_magnitude = MATH::K_CONST * (obj_a.charge * obj_b.charge) / (dist2); 
-                const sf::Vector2f force = n * force_magnitude;
-                obj_a.accelerate(force / obj_a.mass);
-                obj_b.accelerate(-force / obj_b.mass);
+            if(dist2 == 0.0f) {
+                obj_a.position += sf::Vector2f{0.1f, 0.0f};
             }
+            const sf::Vector2f n = delta / std::sqrt(dist2);
+            const float force_magnitude = MATH::K_CONST * (obj_a.charge * obj_b.charge) / (dist2); 
+            const sf::Vector2f force = n * force_magnitude;
+            obj_a.accelerate(-force / obj_a.mass);
+            obj_b.accelerate(force / obj_b.mass); 
         }
     }
 }
@@ -84,7 +86,10 @@ void vpe::SolverVerlet::checkCollisions(float dt_) {
             const sf::Vector2f delta = obj_b.position - obj_a.position;
             const float dist2 = delta.x * delta.x + delta.y * delta.y;
             const float radius_sum = obj_a.radius + obj_b.radius;
-            if(dist2 < radius_sum * radius_sum) {
+            if(dist2 == 0.0f) {
+                obj_a.position += sf::Vector2f{0.1f, 0.0f};
+            }
+            if(dist2 < radius_sum * radius_sum ) {
                 const float dist = std::sqrt(dist2);
                 const sf::Vector2f n = delta/dist;
                 const float mass_ratio_a = obj_a.radius / radius_sum;
@@ -98,10 +103,18 @@ void vpe::SolverVerlet::checkCollisions(float dt_) {
 }
 
 void vpe::SolverVerlet::applyConstraints() {
+    const float constraint_radius = constraint.z;
+    const float buffer = 20.0f;
+    const float repelling_strength = 1000.0f;
     for(auto& obj : objects) {
         const sf::Vector2f delta = sf::Vector2f{constraint.x, constraint.y} - obj.position;
         const float dist2 = delta.x * delta.x + delta.y * delta.y;
         const float radius_diff = constraint.z - obj.radius;
+        if(dist2 > (radius_diff - buffer) * (radius_diff - buffer)) {
+            const float dist = std::sqrt(dist2);
+            const sf::Vector2f n = delta/dist;
+            obj.accelerate(n * repelling_strength * std::cbrt(obj.mass));
+        }
         if(dist2 > radius_diff * radius_diff) {
             const float dist = std::sqrt(dist2);
             const sf::Vector2f n = delta/dist;
@@ -112,8 +125,10 @@ void vpe::SolverVerlet::applyConstraints() {
 }
 
 void vpe::SolverVerlet::updateObjects(float dt_) {
+    const float damping = 1.0f;
     for(auto& obj : objects) {
         obj.update(dt_);
+        obj.setVelocity(obj.getVelocity(dt_) * damping, dt_);
     }
 }
 
