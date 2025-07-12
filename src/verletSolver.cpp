@@ -125,7 +125,7 @@ void vpe::SolverVerlet::applyConstraints() {
 }
 
 void vpe::SolverVerlet::updateObjects(float dt_) {
-    const float damping = 1.0f;
+    const float damping = 0.999f;
     for(auto& obj : objects) {
         obj.update(dt_);
         obj.setVelocity(obj.getVelocity(dt_) * damping, dt_);

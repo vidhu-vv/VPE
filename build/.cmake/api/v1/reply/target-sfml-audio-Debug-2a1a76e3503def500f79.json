@@ -328,15 +328,15 @@
 	[
 		{
 			"backtrace" : 4,
-			"id" : "FLAC::@d572677c3819035d9b3d"
-		},
-		{
-			"backtrace" : 4,
 			"id" : "sfml-system::@8cb1db2982443611e568"
 		},
 		{
 			"backtrace" : 4,
 			"id" : "ogg::@4e5ed7d02827854e35f8"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "FLAC::@d572677c3819035d9b3d"
 		},
 		{
 			"backtrace" : 4,
