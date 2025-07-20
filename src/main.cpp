@@ -18,7 +18,7 @@ int main()
 
     solver.setConstraint({400.0f, 300.0f}, 300.0f);
     solver.setSimUpdateRate(60);
-    solver.setSubstepCount(8);
+    solver.setSubstepCount(16);
 
     const float object_spawn_delay = 0.5f;
     const float object_spawn_speed = 600.0f;

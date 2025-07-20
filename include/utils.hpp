@@ -6,7 +6,7 @@ struct MATH {
     static constexpr float E_CHARGE = -20.0f;
     static constexpr float E_MASS =    1.0f;
     static constexpr float P_MASS =    100.0f;
-    static constexpr float N_MASS =    10.2f;
+    static constexpr float N_MASS =    100.2f;
     static constexpr float P_CHARGE = 20.0f;
     static constexpr float N_CHARGE = 0.0f;
 };
@@ -20,13 +20,13 @@ struct ELECTRON {
 struct PROTON {
     static constexpr float CHARGE = MATH::P_CHARGE;
     static constexpr float MASS = MATH::P_MASS;
-    static constexpr float RADIUS = 5.0f;
+    static constexpr float RADIUS = 6.5f;
 };
 
 struct NEUTRON {
     static constexpr float CHARGE = MATH::N_CHARGE;
     static constexpr float MASS = MATH::N_MASS;
-    static constexpr float RADIUS = 5.0f;
+    static constexpr float RADIUS = 6.5f;
 };
 
 

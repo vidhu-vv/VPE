@@ -58,15 +58,29 @@ float vpe::SolverVerlet::getStepDt() const {
 
 void vpe::SolverVerlet::applyForce() {
     const uint64_t obj_count = objects.size();
+    const float nuclear_binding_radius = 60.0f;
+    const float electric_force_cutoff = 20.0f;
+    const float nuclear_binding_strength = 8000.0f;
     for(uint64_t i{0}; i < obj_count; ++i) {
         Particle& obj_a = objects[i];
         for(uint64_t j{i+1}; j < obj_count; ++j) {
             Particle& obj_b = objects[j];
             const sf::Vector2f delta = obj_b.position - obj_a.position;
-            const float dist2 = delta.x * delta.x + delta.y * delta.y;
+            const float dist2 = std::max(delta.x * delta.x + delta.y * delta.y, electric_force_cutoff * electric_force_cutoff);
+            const float dist2n = delta.x * delta.x + delta.y * delta.y;
             if(dist2 == 0.0f) {
                 obj_a.position += sf::Vector2f{0.1f, 0.0f};
             }
+            if((obj_a.type == ParticleType::PROTON && obj_b.type == ParticleType::NEUTRON) || (obj_a.type == ParticleType::NEUTRON && obj_b.type == ParticleType::PROTON) || (obj_a.type == ParticleType::PROTON && obj_b.type == ParticleType::PROTON)) {
+                if(dist2n < nuclear_binding_radius * nuclear_binding_radius) {
+                    const float dist = std::sqrt(dist2n);
+                    const sf::Vector2f n = delta/dist;
+                    const float force_magnitude = nuclear_binding_strength * (1.0f - dist / nuclear_binding_radius);
+                    obj_a.accelerate(n * 100.0f * force_magnitude / obj_a.mass);
+                    obj_b.accelerate(-n * 100.0f * force_magnitude / obj_b.mass);
+                }
+            }
+                
             const sf::Vector2f n = delta / std::sqrt(dist2);
             const float force_magnitude = MATH::K_CONST * (obj_a.charge * obj_b.charge) / (dist2); 
             const sf::Vector2f force = n * force_magnitude;
@@ -86,10 +100,7 @@ void vpe::SolverVerlet::checkCollisions(float dt_) {
             const sf::Vector2f delta = obj_b.position - obj_a.position;
             const float dist2 = delta.x * delta.x + delta.y * delta.y;
             const float radius_sum = obj_a.radius + obj_b.radius;
-            if(dist2 == 0.0f) {
-                obj_a.position += sf::Vector2f{0.1f, 0.0f};
-            }
-            if(dist2 < radius_sum * radius_sum ) {
+            if((dist2 < radius_sum * radius_sum )) {
                 const float dist = std::sqrt(dist2);
                 const sf::Vector2f n = delta/dist;
                 const float mass_ratio_a = obj_a.radius / radius_sum;
